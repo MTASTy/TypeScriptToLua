@@ -74,7 +74,7 @@ export enum LuaLibFeature {
 const luaLibDependencies: { [lib in LuaLibFeature]?: LuaLibFeature[] } = {
     Async: [LuaLibFeature.Promise, LuaLibFeature.Await],
     Await: [LuaLibFeature.Promise],
-    Promise: [LuaLibFeature.ArrayForEach, LuaLibFeature.ArrayPush],
+    Promise: [LuaLibFeature.ArrayForEach, LuaLibFeature.ArrayPush, LuaLibFeature.Class],
     ArrayFlat: [LuaLibFeature.ArrayConcat],
     ArrayFlatMap: [LuaLibFeature.ArrayConcat],
     Error: [LuaLibFeature.New, LuaLibFeature.Class, LuaLibFeature.FunctionCall],
