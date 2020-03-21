@@ -6,6 +6,8 @@ import { createSelfIdentifier } from "../../../utils/lua-ast";
 import { transformFunctionBody, transformParameters } from "../../function";
 import { transformPropertyName } from "../../literal";
 import { isStaticNode } from "../utils";
+import { LuaLibFeature } from "../../../../LuaLib";
+import { transformLuaLibFunction } from "../../../utils/lualib";
 
 export function transformMethodDeclaration(
     context: TransformationContext,
@@ -29,7 +31,7 @@ export function transformMethodDeclaration(
     const [paramNames, dots, restParamName] = transformParameters(context, node.parameters, functionContext);
 
     const [body] = transformFunctionBody(context, node.parameters, node.body, restParamName);
-    const functionExpression = lua.createFunctionExpression(
+    let functionExpression = lua.createFunctionExpression(
         lua.createBlock(body),
         paramNames,
         dots,
@@ -37,6 +39,16 @@ export function transformMethodDeclaration(
         lua.FunctionExpressionFlags.Declaration,
         node.body
     );
+
+    const isAsync = node.modifiers && node.modifiers.some(m => m.kind === ts.SyntaxKind.AsyncKeyword);
+    if (isAsync) {
+        functionExpression = transformLuaLibFunction(
+            context,
+            LuaLibFeature.Async,
+            undefined,
+            functionExpression
+        ) as any;
+    }
 
     const methodTable =
         isStaticNode(node) || noPrototype

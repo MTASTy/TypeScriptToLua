@@ -40,6 +40,9 @@ export function checkForLuaLibType(context: TransformationContext, type: ts.Type
         case "WeakSet":
             importLuaLibFeature(context, LuaLibFeature.WeakSet);
             return;
+        case "Promise":
+            importLuaLibFeature(context, LuaLibFeature.Promise);
+            return;
     }
 
     if (builtinErrorTypeNames.has(name)) {

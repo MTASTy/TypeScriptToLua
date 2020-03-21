@@ -15,6 +15,8 @@ import { peekScope, performHoisting, popScope, pushScope, Scope, ScopeType } fro
 import { transformGeneratorFunctionBody } from "./generator";
 import { transformIdentifier } from "./identifier";
 import { transformBindingPattern } from "./variable-declaration";
+import { LuaLibFeature } from "../../LuaLib";
+import { transformLuaLibFunction } from "../utils/lualib";
 
 function transformParameterDefaultValueDeclaration(
     context: TransformationContext,
@@ -201,7 +203,7 @@ export function transformFunctionLikeDeclaration(
 
     const [transformedBody, scope] = transformFunctionBody(context, node.parameters, body, spreadIdentifier);
 
-    const functionExpression = lua.createFunctionExpression(
+    let functionExpression = lua.createFunctionExpression(
         lua.createBlock(transformedBody),
         paramNames,
         dotsLiteral,
@@ -209,6 +211,16 @@ export function transformFunctionLikeDeclaration(
         flags,
         node
     );
+
+    const isAsync = node.modifiers && node.modifiers.some(m => m.kind === ts.SyntaxKind.AsyncKeyword);
+    if (isAsync) {
+        functionExpression = transformLuaLibFunction(
+            context,
+            LuaLibFeature.Async,
+            undefined,
+            functionExpression
+        ) as any;
+    }
 
     // Handle named function expressions which reference themselves
     if (ts.isFunctionExpression(node) && node.name && scope.referencedSymbols) {
@@ -249,13 +261,23 @@ export const transformFunctionDeclaration: FunctionVisitor<ts.FunctionDeclaratio
         : transformFunctionBody(context, node.parameters, node.body, restParamName);
 
     const block = lua.createBlock(body);
-    const functionExpression = lua.createFunctionExpression(
+    let functionExpression = lua.createFunctionExpression(
         block,
         params,
         dotsLiteral,
         restParamName,
         lua.FunctionExpressionFlags.Declaration
     );
+
+    const isAsync = node.modifiers && node.modifiers.some(m => m.kind === ts.SyntaxKind.AsyncKeyword);
+    if (isAsync) {
+        functionExpression = transformLuaLibFunction(
+            context,
+            LuaLibFeature.Async,
+            undefined,
+            functionExpression
+        ) as any;
+    }
 
     if (hasDefaultExportModifier(node)) {
         return lua.createAssignmentStatement(

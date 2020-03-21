@@ -25,6 +25,8 @@ export enum LuaLibFeature {
     ArrayFlat = "ArrayFlat",
     ArrayFlatMap = "ArrayFlatMap",
     ArraySetLength = "ArraySetLength",
+    Async = "Async",
+    Await = "Await",
     Class = "Class",
     ClassExtends = "ClassExtends",
     Decorate = "Decorate",
@@ -48,6 +50,7 @@ export enum LuaLibFeature {
     ObjectKeys = "ObjectKeys",
     ObjectRest = "ObjectRest",
     ObjectValues = "ObjectValues",
+    Promise = "Promise",
     Set = "Set",
     WeakMap = "WeakMap",
     WeakSet = "WeakSet",
@@ -69,6 +72,9 @@ export enum LuaLibFeature {
 }
 
 const luaLibDependencies: { [lib in LuaLibFeature]?: LuaLibFeature[] } = {
+    Async: [LuaLibFeature.Promise, LuaLibFeature.Await],
+    Await: [LuaLibFeature.Promise],
+    Promise: [LuaLibFeature.ArrayForEach, LuaLibFeature.ArrayPush],
     ArrayFlat: [LuaLibFeature.ArrayConcat],
     ArrayFlatMap: [LuaLibFeature.ArrayConcat],
     Error: [LuaLibFeature.New, LuaLibFeature.Class, LuaLibFeature.FunctionCall],
