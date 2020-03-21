@@ -1,8 +1,8 @@
 {
-    "name": "typescript-to-lua",
+    "name": "@mtasty/typescript-to-lua",
     "version": "0.32.0",
     "description": "A generic TypeScript to Lua transpiler. Write your code in TypeScript and publish Lua!",
-    "repository": "https://github.com/TypeScriptToLua/TypeScriptToLua",
+    "repository": "https://github.com/MTASTy/TypeScriptToLua",
     "license": "MIT",
     "keywords": [
         "typescript",
