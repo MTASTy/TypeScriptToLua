@@ -1,6 +1,3 @@
-declare function error(value: string, level?: number): never;
-declare function print(input: string): void;
-
 // tslint:disable-next-line:variable-name
 let ____unhandledRejectionCallback = (reason: string) => {
     print(`Unhandled rejected promise ${reason}`);
@@ -278,10 +275,8 @@ class PromiseImpl<T = never> {
                 });
             }
         });
-    }
 
-    protected __gc(): void {
-        if (this.state === ____PromiseState.REJECTED && !this.handledError) {
+        if (!this.handledError) {
             for (const d of this.queue) {
                 if (d.onRejected) {
                     return;

@@ -27,3 +27,4 @@ declare function select<T>(index: "#", ...args: T[]): number;
 
 declare function type(value: any): string;
 declare function error(value: string, level?: number): never;
+declare function print(input: string): void;
