@@ -275,8 +275,10 @@ class PromiseImpl<T = never> {
                 });
             }
         });
+    }
 
-        if (!this.handledError) {
+    protected __gc(): void {
+        if (this.state === ____PromiseState.REJECTED && !this.handledError) {
             for (const d of this.queue) {
                 if (d.onRejected) {
                     return;
